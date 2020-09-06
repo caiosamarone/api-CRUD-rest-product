@@ -1,1 +1,1 @@
-##CRUD PROJECT 
+A CRUD REST project to manage products, using node.js and Azzure to deploy. 
