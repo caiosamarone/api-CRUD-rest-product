@@ -11,4 +11,16 @@ const controller = require('../controllers/product-controllers')
 //delete
 router.delete('/:id',controller.delete)
 
+//get
+router.get('/',controller.get)
+
+//getBySlug
+router.get('/:slug',controller.getBySlug)
+
+//getById
+router.get('/admin/:id',controller.getById)
+
+//getBySlug
+router.get('/tags/:tag',controller.getByTag)
+
 module.exports = router
