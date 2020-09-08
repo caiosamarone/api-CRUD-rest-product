@@ -9,7 +9,7 @@ const controller = require('../controllers/product-controllers')
  router.put('/:id',controller.put)
 
 //delete
-router.delete('/:id',controller.delete)
+router.delete('/',controller.delete)
 
 //get
 router.get('/',controller.get)

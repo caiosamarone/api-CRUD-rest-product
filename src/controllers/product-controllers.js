@@ -67,22 +67,39 @@ exports.post = (req,res,next) => {
 
 //put > att produto
 exports.put = (req,res,next) => {
-    const id = req.params.id; //precisa ser igual ao param passado acima na url
-    res.status(201).send(
-        {
-            id: id,
-            item: req.body
-        })  //pega o corpo da requisicao
+    Product
+        .findByIdAndUpdate(req.params.id,{
+            $set: {     //setar o que veio da requisição
+                title: req.body.title,
+                description: req.body.description,
+                price: req.body.price,
+                slug: req.body.slug
+            }
+        }).then(x => {
+            res.status(200).send({
+                message:'Produto atualizado'
+            })  
+       }).catch(e => {
+           res.status(400).send({
+                message:'Falha ao atualizar produto', 
+                data: e
+            })
+        })
 }
 
 
 //delete
 exports.delete = (req,res,next) => {
-    const id = req.params.id;
-    res.status(200).send(
-        {
-            id: id,
-            item: req.body
-        }) 
-    
+    Product
+        .findByIdAndDelete(req.body.id)
+        .then(x => {
+            res.status(200).send({
+                message:'Produto Excluido'
+            })  
+       }).catch(e => {
+           res.status(400).send({
+                message:'Falha ao excluir produto', 
+                data: e
+            })
+        })
 }
