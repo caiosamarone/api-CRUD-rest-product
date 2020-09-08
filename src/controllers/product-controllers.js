@@ -2,12 +2,10 @@ const mongoose = require('mongoose')
 const Product = mongoose.model('Product')
 const ValidatonContract = require('../validators/fluentValidator')
 const ValidationContract = require('../validators/fluentValidator')
-
+const repository = require('../repositories/product-repository')
 //listar produtos
 exports.get = (req,res,next) => {
-    Product.find({
-        active:true  //trazer apenas produtos que estao ativos
-        },'title price slug')   //buscar apenas estes campos da tabela
+         repository.get()
         .then(data => {
             res.status(200).send(data)  //json retornado com a lista de produtos
         }).catch( e=> {
@@ -17,10 +15,7 @@ exports.get = (req,res,next) => {
 
 //listar Produtos pelo slug
 exports.getBySlug = (req,res,next) => {
-    Product.findOne({
-            slug: req.params.slug,   //traz o slug que tiver setado na requisição
-            active:true  
-        },  'title description price slug tags')   
+        repository.getBySlug(req.params.slug)
         .then(data => {
             res.status(200).send(data) 
         }).catch( e=> {
@@ -30,10 +25,8 @@ exports.getBySlug = (req,res,next) => {
 
 //listar produtos pela tag
 exports.getByTag = (req,res,next) => {
-    Product.find({
-            tags: req.params.tag,   //traz o slug que tiver setado na requisição
-            active:true  
-        },  'title description price slug tags')   
+    repository
+        .getByTag(req.params.tag) 
         .then(data => {
             res.status(200).send(data) 
         }).catch( e=> {
@@ -43,7 +36,7 @@ exports.getByTag = (req,res,next) => {
 
 //listar Produtos pelo id
 exports.getById = (req,res,next) => {
-    Product.findById(req.params.id)   
+    repository.getById(req.params.id)     
         .then(data => {
             res.status(200).send(data)  
         }).catch( e=> {
@@ -64,15 +57,14 @@ exports.post = (req,res,next) => {
         return
     }
 
-    var product = new Product(req.body)
-    product.save()
-        .then(x => {
-            res.status(201).send({
-                 message:'Produto cadastrado'})  
-        }).catch(e => {
-            res.status(400).send(
-                { message:'Falha ao cadastrar produto', data: e}) 
-        })
+        repository.create(req.body)
+            .then(x => {
+                res.status(201).send({
+                    message:'Produto cadastrado'})  
+            }).catch(e => {
+                res.status(400).send(
+                    { message:'Falha ao cadastrar produto', data: e}) 
+            })
     
    
 
@@ -80,15 +72,8 @@ exports.post = (req,res,next) => {
 
 //put > att produto
 exports.put = (req,res,next) => {
-    Product
-        .findByIdAndUpdate(req.params.id,{
-            $set: {     //setar o que veio da requisição
-                title: req.body.title,
-                description: req.body.description,
-                price: req.body.price,
-                slug: req.body.slug
-            }
-        }).then(x => {
+    repository.update(req.params.id,req.body)
+    .then(x => {
             res.status(200).send({
                 message:'Produto atualizado'
             })  
@@ -103,16 +88,15 @@ exports.put = (req,res,next) => {
 
 //delete
 exports.delete = (req,res,next) => {
-    Product
-        .findByIdAndDelete(req.body.id)
-        .then(x => {
-            res.status(200).send({
-                message:'Produto Excluido'
-            })  
-       }).catch(e => {
-           res.status(400).send({
-                message:'Falha ao excluir produto', 
-                data: e
+        repository.remove(req.body.id)
+            .then(x => {
+                res.status(200).send({
+                    message:'Produto Excluido'
+                })  
+        }).catch(e => {
+            res.status(400).send({
+                    message:'Falha ao excluir produto', 
+                    data: e
+                })
             })
-        })
 }
