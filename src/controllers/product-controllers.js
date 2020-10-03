@@ -1,6 +1,3 @@
-const mongoose = require('mongoose')
-const Product = mongoose.model('Product')
-const ValidatonContract = require('../validators/fluentValidator')
 const ValidationContract = require('../validators/fluentValidator')
 const repository = require('../repositories/product-repository')
 //listar produtos
@@ -78,10 +75,8 @@ exports.post = async(req,res,next) => {
             res.status(500).send({
                 message: 'Falha ao processar sua requisição'
             })
-        }        
-      
-
-}  
+        }    
+    }  
 
 //put > att produto
 exports.put = async(req,res,next) => {
